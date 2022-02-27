@@ -45,7 +45,7 @@ const Column = styled.article`
 const IMG = styled.img`
   padding: 10px;
   width: 120px;
-  height: 120px;
+  height: 100px;
   object-fit: cover;
 `;
 

@@ -7,6 +7,13 @@ import { CartDetails } from "./CartDetails";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
+import './bootstrap-dist/css/bootstrap.min.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Nav from "./Nav";
+
+import Login from "./components/login.component";
+import SignUp from "./components/signup.component";
+
 const FixedCart = ({ cartItems, onOpen }) => (
 <div onClick={onOpen} style={{float:"right", color:"green", marginRight:"30px"}}>
 Cimpress Cart
@@ -20,7 +27,7 @@ Cimpress Cart
 const numberFormat = val =>
   Number.isInteger(val) ? val : val.toFixed(2);
   
-function App() {
+export default function App() {
   const [cart, setCart] = useState([]);
   const [items, setItems] = useState(API);
   const [cartOpen, isCartOpen] = useState(false);
@@ -89,7 +96,16 @@ function App() {
   const cartCountTotal = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <>
+    <Router>
+        <div className="App">
+        <Nav />
+        <Routes>
+          <Route path="/SignUp" element={<SignUp/>} />
+          <Route path="/login" element={<Login/>} />
+          <Route
+      path="*"
+      element={
+        <>
       <CartDetails
         open={cartOpen}
         onClose={() => isCartOpen(false)}
@@ -102,13 +118,14 @@ function App() {
 
       <FixedCart onOpen={() => isCartOpen(true)} cartItems={cartCountTotal} />
 
-        <h1 style={{color: "green"}}>Interview: Shopping Cart App</h1>
+        <h1 style={{color: "green", textAlign:"center"}}>Interview: Shopping Cart App</h1>
         <ListedItems
           items={items}
           addToCart={addToCart}
         />
-    </>
+      </>}></Route>
+        </Routes>
+        </div>
+    </Router>
   );
 }
-
-export default App;
