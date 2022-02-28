@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Link, Navigate } from 'react-router-dom';
 
 import LoginService from '../services/LoginService';
-import { LoadCart } from "../services/CartService";
+import { SaveCart, LoadCart } from "../services/CartService";
 
 import Message from '../elements/Message';
 import Error from '../elements/Error';
@@ -13,7 +13,14 @@ import {
   ERROR_IN_LOGIN,
 } from '../MessageBundle';
 
-export default class Login extends Component {
+export const Logout = (props) => {
+  props.cbSetLoggedIn(false); //TODO_KK: move this into SaveCart, conditionally..
+  return (
+  <SaveCart userData={props.userData} cbSetLoadedCart={props.setLoadedCart} cart={props.cart} cbUserData={props.setUserData}/>
+   );
+};
+
+export class Login extends Component {
   constructor(props) {
     super(props);
 
@@ -22,6 +29,8 @@ export default class Login extends Component {
       password: '',
       error: false,
       loginSuccess: false,
+      cbSetLoggedIn : props.cbSetLoggedIn,
+      cbUserData: props.cbUserData
     };
   }
 
@@ -54,7 +63,9 @@ export default class Login extends Component {
         error: false,
       });
     //inform PARENT THAT A NEW USER HAS LOGGED IN!
-    this.props.cbUserData({name: this.state.user_name, password: this.state.password});
+    alert("onSUbmit: this.state:"+JSON.stringify(this.state));
+    this.state.cbUserData({name: this.state.user_name, password: this.state.password});
+    this.state.cbSetLoggedIn(true);
     }
   };
 
@@ -109,9 +120,8 @@ export default class Login extends Component {
            {' '}
         </form>{' '}
         {error && <Error message={ERROR_IN_LOGIN} />}    {' '}
-       // {loginSuccess && <Message message={LOGIN_MESSAGE} /> && <Navigate to="/Home" replace={true}/> }    {' '}
        {loginSuccess && <Message message={LOGIN_MESSAGE} /> &&  
-             <LoadCart userData={{name: this.state.user_name}} cbSetLoadedCart={this.props.setLoadedCart} />}
+             <LoadCart userData={{name: this.state.user_name}} cbSetLoadedCart={this.props.cbSetLoadedCart} />}
       {' '}
       </div>
     );

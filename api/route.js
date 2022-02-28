@@ -78,6 +78,12 @@ router.get("/loadcart", function(req, res) {
 router.post("/savecart", async (req,res) => {
     console.log("REQ: ", req.body);
         let cart = new Cart(req.body);
+        const result01 = await Cart.updateOne(
+            { userName: req.body.userName },
+            { $set: req.body },
+            { upsert: true } // Make this update into an upsert
+          );
+          /**
         cart.save()
             .then(reg => {
                 console.log("SAVED CART: ", cart);
@@ -87,6 +93,8 @@ router.post("/savecart", async (req,res) => {
                 console.log("ERROR SAVING CART: ", cart);
                 res.status(400).send("Failed to store to database");
             });
+            **/
+            res.sendStatus(200);
     });
 
 

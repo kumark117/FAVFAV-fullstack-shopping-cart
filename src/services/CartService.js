@@ -6,7 +6,7 @@ export const SaveCart = 	(props) => {
     if (data.userData === undefined|| data.userData.name === undefined) {
       data.userData = {name :"Interview-Guest",
               password : "guest-password"};
-      props.cbUserData(data.userData);
+      if (props && props.cbSetUserData) props.cbSetUserData(data.userData);
     }
     const cartAsPerSchema = {userName: data.userData.name, items: (data.cart ?data.cart:[]) };
     axios.post('http://localhost:4000/savecart', cartAsPerSchema)
@@ -27,7 +27,7 @@ export const SaveCart = 	(props) => {
     if (data.userData === undefined|| data.userData.name === undefined) {
       data.userData = {name :"Interview-Guest",
               password : "guest-password"};
-      if (props && props.cbUserData) props.cbUserData(data.userData);
+      if (props && props.cbSetUserData) props.cbSetUserData(data.userData);
     }
     
     const getURL = "http://localhost:4000/loadcart/?userName="+data.userData.name;

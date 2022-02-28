@@ -11,7 +11,7 @@ import './bootstrap-dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Nav from "./Nav";
 
-import Login from "./components/Login";
+import { Login, Logout } from "./components/LoginLogout";
 import Register from "./components/Register";
 import {SaveCart, LoadCart} from "./services/CartService";
 
@@ -35,6 +35,8 @@ export default function App() {
   const [items, setItems] = useState(API);
   const [cartOpen, isCartOpen] = useState(false);
   const [userData, setUserData] = useState({});
+
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const addToCart = i => {
     setItems(state =>
@@ -108,14 +110,15 @@ export default function App() {
   return (
     <Router>
         <div className="App">
-        <Nav />
-        <Routes>
-          <Route path="/register" element={<Register cbUserData={setUserData}/>} />
-          <Route path="/login" element={<Login cbUserData={setUserData} cbSetLoadedCart={setLoadedCart}/>} />
-          userData.name && <Route path="/savecart"
-                    element={<SaveCart userData={userData} cart={cart} cbUserData={setUserData}/>} />
-          userData.name && <Route path="/loadcart"
-                    element={<LoadCart userData={userData} cbSetLoadedCart={setLoadedCart} cbUserData={setUserData}/>} />
+        <Nav loggedIn={loggedIn}/>
+        <Routes>  
+        <Route path="/register" element={<Register cbUserData={setUserData}/>} />
+          {!loggedIn && <Route path="/login" element={<Login cbUserData={setUserData} cbSetLoadedCart={setLoadedCart} cbSetLoggedIn={setLoggedIn}/>} /> }
+          {loggedIn && <Route path="/logout" element={<Logout cart={cart} cbUserData={setUserData} cbSetLoggedIn={setLoggedIn}/>} /> }          
+          {loggedIn && <Route path="/savecart"
+                    element={<SaveCart userData={userData} cbSetLoadedCart={setLoadedCart} cart={cart} cbSetUserData={setUserData}/>} />}
+          {loggedIn && <Route path="/loadcart"
+                    element={<LoadCart userData={userData} cbSetLoadedCart={setLoadedCart} cbSetUserData={setUserData}/>} />}
         
           <Route
       path="*"
@@ -132,7 +135,7 @@ export default function App() {
       />
 
         <h1 style={{color: "green", textAlign:"center"}}>Interview: MERN: Full Stack Shopping Cart App</h1>
-        <h2 style={{color: "green", textAlign:"center"}}>Welcome {userData.name}!!</h2>
+        <h2 style={{color: "green", textAlign:"center"}}>Welcome {loggedIn ? userData.name :""}!!</h2>
 
         <FixedCart onOpen={() => isCartOpen(true)} cartItems={cartCountTotal} />
 
