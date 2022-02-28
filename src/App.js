@@ -11,8 +11,9 @@ import './bootstrap-dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Nav from "./Nav";
 
-import Login from "./components/login.component";
-import SignUp from "./components/signup.component";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import {SaveCart, LoadCart} from "./services/CartService";
 
 const FixedCart = ({ cartItems, onOpen }) => (
 <div onClick={onOpen} style={{float:"right", color:"green", marginRight:"30px"}}>
@@ -29,8 +30,11 @@ const numberFormat = val =>
   
 export default function App() {
   const [cart, setCart] = useState([]);
+  const [loadedCart, setLoadedCart] = useState(null);
+
   const [items, setItems] = useState(API);
   const [cartOpen, isCartOpen] = useState(false);
+  const [userData, setUserData] = useState({});
 
   const addToCart = i => {
     setItems(state =>
@@ -93,15 +97,26 @@ export default function App() {
     );
   };
 
+  if (loadedCart) {
+  setCart(loadedCart);
+  setLoadedCart(null);
+  }
   const cartCountTotal = cart.reduce((acc, item) => acc + item.quantity, 0);
+
+  //const cartCountTotal=123.456;
 
   return (
     <Router>
         <div className="App">
         <Nav />
         <Routes>
-          <Route path="/SignUp" element={<SignUp/>} />
-          <Route path="/login" element={<Login/>} />
+          <Route path="/register" element={<Register cbUserData={setUserData}/>} />
+          <Route path="/login" element={<Login cbUserData={setUserData} cbSetLoadedCart={setLoadedCart}/>} />
+          userData.name && <Route path="/savecart"
+                    element={<SaveCart userData={userData} cart={cart} cbUserData={setUserData}/>} />
+          userData.name && <Route path="/loadcart"
+                    element={<LoadCart userData={userData} cbSetLoadedCart={setLoadedCart} cbUserData={setUserData}/>} />
+        
           <Route
       path="*"
       element={
@@ -109,16 +124,18 @@ export default function App() {
       <CartDetails
         open={cartOpen}
         onClose={() => isCartOpen(false)}
-        cart={cart}
+        cart={loadedCart? loadedCart: cart}
         increaseQ={increaseQuantity}
         decreaseQ={decreaseQuantity}
         cartCountTotal={cartCountTotal}
         removeFromCart={removeFromCart}
       />
 
-      <FixedCart onOpen={() => isCartOpen(true)} cartItems={cartCountTotal} />
+        <h1 style={{color: "green", textAlign:"center"}}>Interview: MERN: Full Stack Shopping Cart App</h1>
+        <h2 style={{color: "green", textAlign:"center"}}>Welcome {userData.name}!!</h2>
 
-        <h1 style={{color: "green", textAlign:"center"}}>Interview: Shopping Cart App</h1>
+        <FixedCart onOpen={() => isCartOpen(true)} cartItems={cartCountTotal} />
+
         <ListedItems
           items={items}
           addToCart={addToCart}

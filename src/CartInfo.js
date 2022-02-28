@@ -22,7 +22,7 @@ export const CartInfo = ({ cart, increaseQ, decreaseQ, removeFromCart }) => (
 
     {cart.map((item, i) => (
       <DetailColumn key={item.name}>
-          {item.name} | {item.quantity} x ${item.price} -> {" "}
+          {item.name} | {item.quantity} x ${item.price} =&gt; {" "}
           ${numberFormat(item.price * item.quantity)}
 
         <CartButtons
