@@ -77,7 +77,7 @@ router.get("/loadcart", function(req, res) {
 //NOTE  Registration route
 router.post("/savecart", async (req,res) => {
     console.log("REQ: ", req.body);
-        let cart = new Cart(req.body);
+        //let cart = new Cart(req.body);
         const result01 = await Cart.updateOne(
             { userName: req.body.userName },
             { $set: req.body },

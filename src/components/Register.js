@@ -75,7 +75,7 @@ export default class Register extends Component {
       password: this.state.password,
     };
 
-    alert("api call next");
+    //alert("api call next");
     const registerStatus = await UserRegistration (data);
     if (registerStatus === 200) {
       this.setState ({

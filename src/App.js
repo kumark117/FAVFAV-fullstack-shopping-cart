@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import API from "./mockAPI";
 import { ListedItems } from "./ListedItems";
@@ -15,12 +15,15 @@ import { Login, Logout } from "./components/LoginLogout";
 import Register from "./components/Register";
 import {SaveCart, LoadCart} from "./services/CartService";
 
-const FixedCart = ({ cartItems, onOpen }) => (
+const FixedCart = ({ cart, onOpen, updateItemsFromCart }) => (
 <div onClick={onOpen} style={{float:"right", color:"green", marginRight:"30px"}}>
 Cimpress Cart
 <div>
   <FontAwesomeIcon size="2x" icon={faShoppingCart} />
-  <b>{cartItems || 0}</b>
+  <b>{cart.reduce(
+    (acc, item) => acc + item.quantity,
+    0
+  )}</b> {  updateItemsFromCart() }
 </div>
 </div>
 );
@@ -30,7 +33,7 @@ const numberFormat = val =>
   
 export default function App() {
   const [cart, setCart] = useState([]);
-  const [loadedCart, setLoadedCart] = useState(null);
+  const [loadedCart, setLoadedCart] = useState([]);
 
   const [items, setItems] = useState(API);
   const [cartOpen, isCartOpen] = useState(false);
@@ -98,14 +101,32 @@ export default function App() {
       })
     );
   };
-
-  if (loadedCart) {
-  setCart(loadedCart);
-  setLoadedCart(null);
+  
+  const updateItemsFromCart = () => {
+    //update inCart flag of items, based on cart
+    console.log("updateItemsFromCart cart=", cart);
+    items.forEach(item => {
+      item.inCart  = cart.find(c => c.name === item.name) ? true : false;
+      console.log(item.name, "incart "+item.inCart);
+    });
   }
-  const cartCountTotal = cart.reduce((acc, item) => acc + item.quantity, 0);
+  
+useEffect( ()=>{
+  if (loggedIn) {
+    if (loadedCart.length) {
+        setCart(loadedCart);
+        //NASTY BUG: setLoadedCart([]);
+    }
+    else 
+      setCart([]);
+  }
+  else
+   setCart([]);
 
-  //const cartCountTotal=123.456;
+  updateItemsFromCart();
+}, [loggedIn, loadedCart]);
+
+
 
   return (
     <Router>
@@ -118,7 +139,7 @@ export default function App() {
           {loggedIn && <Route path="/savecart"
                     element={<SaveCart userData={userData} cbSetLoadedCart={setLoadedCart} cart={cart} cbSetUserData={setUserData}/>} />}
           {loggedIn && <Route path="/loadcart"
-                    element={<LoadCart userData={userData} cbSetLoadedCart={setLoadedCart} cbSetUserData={setUserData}/>} />}
+                    element={<LoadCart userData={userData} cbSetLoadedCart={setLoadedCart} cbSetUserData={setUserData} />} />}
         
           <Route
       path="*"
@@ -127,17 +148,16 @@ export default function App() {
       <CartDetails
         open={cartOpen}
         onClose={() => isCartOpen(false)}
-        cart={loadedCart? loadedCart: cart}
+        cart={cart}
         increaseQ={increaseQuantity}
         decreaseQ={decreaseQuantity}
-        cartCountTotal={cartCountTotal}
         removeFromCart={removeFromCart}
       />
 
         <h1 style={{color: "green", textAlign:"center"}}>Interview: MERN: Full Stack Shopping Cart App</h1>
         <h2 style={{color: "green", textAlign:"center"}}>Welcome {loggedIn ? userData.name :""}!!</h2>
 
-        <FixedCart onOpen={() => isCartOpen(true)} cartItems={cartCountTotal} />
+        <FixedCart onOpen={() => isCartOpen(true)} cart={cart} updateItemsFromCart={updateItemsFromCart}/>
 
         <ListedItems
           items={items}

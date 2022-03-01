@@ -31,7 +31,7 @@ export const SaveCart = 	(props) => {
     }
     
     const getURL = "http://localhost:4000/loadcart/?userName="+data.userData.name;
-    alert("getURL: "+ getURL);
+    //alert("getURL: "+ getURL);
     fetch(getURL)
      .then(response => {
       return response.json();

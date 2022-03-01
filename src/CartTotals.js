@@ -4,7 +4,12 @@ import styled from "styled-components";
 const numberFormat = val =>
   Number.isInteger(val) ? val : val.toFixed(2);
 
-export const CartTotals = ({ cart, cartCountTotal }) => {
+export const CartTotals = ({ cart }) => {
+  const cartCountTotal = cart.reduce(
+    (acc, item) => acc + item.quantity,
+    0
+  );
+
   const cartPriceTotal = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0

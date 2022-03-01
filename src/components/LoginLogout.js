@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import LoginService from '../services/LoginService';
 import { SaveCart, LoadCart } from "../services/CartService";
@@ -63,7 +63,7 @@ export class Login extends Component {
         error: false,
       });
     //inform PARENT THAT A NEW USER HAS LOGGED IN!
-    alert("onSUbmit: this.state:"+JSON.stringify(this.state));
+    //alert("onSUbmit: this.state:"+JSON.stringify(this.state));
     this.state.cbUserData({name: this.state.user_name, password: this.state.password});
     this.state.cbSetLoggedIn(true);
     }

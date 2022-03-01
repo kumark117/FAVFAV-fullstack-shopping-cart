@@ -8,7 +8,6 @@ export const CartDetails = ({
   cart,
   increaseQ,
   decreaseQ,
-  cartCountTotal,
   removeFromCart,
   open,
   onClose
@@ -20,7 +19,7 @@ export const CartDetails = ({
         {!cart.length && <>Cart is empty</>}
         {!!cart.length && (
           <>
-            <CartTotals cart={cart} cartCountTotal={cartCountTotal} />
+            <CartTotals cart={cart} />
             <CartInfo
               cart={cart}
               increaseQ={increaseQ}
